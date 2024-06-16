@@ -1,0 +1,12 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body{
+    background-color: hwb(94 3% 15%)
+}
+
+.base{
+    color: rgb(73, 14, 200);
+}

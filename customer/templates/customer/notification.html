@@ -1,0 +1,63 @@
+{% include 'navbar.html' %}
+
+{% block content %}
+    <p>Notification page:</p>
+    <ul>
+    {% for msg in order_message %}
+        <li>
+            <p>{{ msg }}</p>
+            <button class="payButton">Pay with Khalti</button>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <!-- Button to trigger Cash On Delivery -->
+    <button type="button" onclick="showSuccess()">Cash On Delivery</button>
+
+    <!-- Success message box -->
+    <div id="successMsg" class="success-message" style="display: none;">
+        Thank you for your order! Your order will be processed for Cash On Delivery.
+    </div>
+
+    <script src="https://khalti.com/static/khalti-checkout.js"></script>
+    <script>
+        // Initialize Khalti Checkout
+        var config = {
+            // Replace publicKey with your Khalti Merchant Public Key
+            "publicKey": "your_public_key_here",
+            "productIdentity": "1234567890",
+            "productName": "Sample Product",
+            "productUrl": "http://127.0.0.1:8000/customer/notify-customer/",
+            "eventHandler": {
+                onSuccess(payload) {
+                    console.log("Payment successful", payload);
+                    // Handle payment success event
+                    alert("Payment successful. Transaction ID: " + payload.token);
+                },
+                onError(error) {
+                    console.log("Payment error", error);
+                    alert("Payment error: " + error.message);
+                },
+                onClose() {
+                    console.log("Payment window closed");
+                }
+            }
+        };
+
+        var checkout = new KhaltiCheckout(config);
+
+        // Attach click event to each payButton for Khalti payment
+        document.querySelectorAll('.payButton').forEach(function(button) {
+            button.addEventListener('click', function () {
+                // Open Khalti Checkout when payButton is clicked
+                checkout.show({amount: 1000}); // Set the amount to be paid in paisa
+            });
+        });
+
+        // Function to show success message for Cash On Delivery
+        function showSuccess() {
+            // Hide any existing success message related to Khalti payment
+            document.getElementById('successMsg').style.display = 'block';
+        }
+    </script>
+{% endblock content %}
